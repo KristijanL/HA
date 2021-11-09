@@ -1,0 +1,101 @@
+blueprint:
+  name: Fantem Wall-mount four Button 
+  description: Create automations for Fantem Wall-mount four Button using the ZWave-JS integration
+  domain: automation
+  
+  input:
+    fantem_ft130:
+      name: Fantem Wall-mount four Button
+      selector:
+        device:
+          integration: zwave_js
+          manufacturer: Fantem
+          model: FT130
+          
+    button_1_pressed:
+      name: Button 1 (Sleep icon) Pressed
+      description: Action to run when button is pressed
+      default: []
+      selector:
+        action: 
+
+    button_1_held:
+      name: Button 1 (Sleep icon) Held Down
+      description: Action to run when button is held
+      default: []
+      selector:
+        action: 
+
+    button_2_pressed:
+      name: Button 2 (People icon) Pressed
+      description: Action to run when button is pressed
+      default: []
+      selector:
+        action: 
+
+    button_2_held:
+      name: Button 2 (People icon) Held Down
+      description: Action to run when button is held
+      default: []
+      selector:
+        action: 
+
+    button_3_pressed:
+      name: Button 3 (Centre button) Pressed
+      description: Action to run when button is pressed
+      default: []
+      selector:
+        action: 
+
+    button_3_held:
+      name: Button 3 (Centre button) Held Down
+      description: Action to run when button is held
+      default: []
+      selector:
+        action: 
+
+    button_4_pressed:
+      name: Button 4 (Power icon) Pressed
+      description: Action to run when button is pressed
+      default: []
+      selector:
+        action: 
+
+    button_4_held:
+      name: Button 4 (Power icon) Held Down
+      description: Action to run when button is held
+      default: []
+      selector:
+        action: 
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  platform: event
+  event_type: zwave_js_value_notification
+  event_data:
+    command_class_name: Central Scene
+    device_id: !input fantem_ft130
+
+action:
+  - variables:
+      scene_id: "{{ trigger.event.data.property_key_name }}"
+      key_state: "{{ trigger.event.data.value }}"
+  - choose:
+    - conditions: "{{ scene_id == '001' and key_state == 'KeyPressed' }}"
+      sequence: !input button_1_pressed
+    - conditions: "{{ scene_id == '001' and key_state == 'KeyHeldDown' }}"
+      sequence: !input button_1_held
+    - conditions: "{{ scene_id == '002' and key_state == 'KeyPressed' }}"
+      sequence: !input button_2_pressed
+    - conditions: "{{ scene_id == '002' and key_state == 'KeyHeldDown' }}"
+      sequence: !input button_2_held
+    - conditions: "{{ scene_id == '003' and key_state == 'KeyPressed' }}"
+      sequence: !input button_3_pressed
+    - conditions: "{{ scene_id == '003' and key_state == 'KeyHeldDown' }}"
+      sequence: !input button_3_held
+    - conditions: "{{ scene_id == '004' and key_state == 'KeyPressed' }}"
+      sequence: !input button_4_pressed
+    - conditions: "{{ scene_id == '004' and key_state == 'KeyHeldDown' }}"
+      sequence: !input button_4_held
